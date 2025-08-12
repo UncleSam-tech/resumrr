@@ -1,5 +1,8 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js",
-  "/r/[key]/page": "app/r/[key]/page.js",
-  "/api/recruiter/data/route": "app/api/recruiter/data/route.js"
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/api/recruiter/data/route": "app/api/recruiter/data/route.js",
+  "/api/submit/route": "app/api/submit/route.js",
+  "/r/[key]/page": "app/r/[key]/page.js"
 }
