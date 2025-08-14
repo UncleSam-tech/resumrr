@@ -104,16 +104,34 @@ export async function GET(req: NextRequest) {
   if (!url) {
     return NextResponse.json({ message: 'Server not configured' }, { status: 500 });
   }
-  const auth = process.env.N8N_READ_AUTH;
+  const auth = process.env.N8N_READ_AUTH; // e.g. "Bearer abc" or "Basic base64..."
+  const customHeaderName = process.env.N8N_READ_HEADER_NAME; // e.g. "X-Api-Key"
+  const customHeaderValue = process.env.N8N_READ_HEADER_VALUE; // e.g. "abc123"
+  const extraQuery = process.env.N8N_READ_QUERY; // optional: appended as query string
+
+  let requestUrl = url;
+  if (extraQuery) {
+    try {
+      const u = new URL(url);
+      const q = new URLSearchParams(extraQuery);
+      q.forEach((v, k) => u.searchParams.set(k, v));
+      requestUrl = u.toString();
+    } catch {
+      // ignore invalid extra query
+    }
+  }
 
   let upstream: Response;
   try {
-    upstream = await fetch(url, {
+    const headers: Record<string, string> = {
+      Accept: 'application/json',
+    };
+    if (auth) headers.Authorization = auth;
+    if (customHeaderName && customHeaderValue) headers[customHeaderName] = customHeaderValue;
+
+    upstream = await fetch(requestUrl, {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        ...(auth ? { Authorization: auth } : {}),
-      },
+      headers,
       cache: 'no-store',
     });
   } catch (e) {
