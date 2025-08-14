@@ -17,10 +17,10 @@ export function LoadingState() {
   );
 }
 
-export function ErrorState({ onRetry }: { onRetry: () => void }) {
+export function ErrorState({ message, onRetry }: { message?: string; onRetry: () => void }) {
   return (
     <div className="text-center text-red-700 bg-red-50 ring-1 ring-red-200 rounded-md p-6">
-      Failed to load candidates.{' '}
+      <div className="mb-2">{message || 'Failed to load candidates.'}</div>
       <button type="button" onClick={onRetry} className="underline">Retry</button>
     </div>
   );

@@ -19,10 +19,15 @@ export default function DashboardClient() {
     setError(null);
     try {
       const res = await fetch('/api/recruiter/data', { cache: 'no-store' });
-      if (!res.ok) throw new Error(`Failed: ${res.status}`);
-      const json = (await res.json()) as ApiResponse;
-      setAll(json.data);
-      setUpdatedAt(json.updatedAt);
+      const json = (await res.json().catch(() => ({}))) as Partial<ApiResponse & { message?: string } & Record<string, any>>;
+      if (!res.ok) {
+        const serverMessage = typeof json?.message === 'string' && json.message ? json.message : res.statusText;
+        throw new Error(`${res.status} ${serverMessage}`.trim());
+      }
+      // happy path
+      const data = Array.isArray(json?.data) ? (json.data as Candidate[]) : [];
+      setAll(data);
+      setUpdatedAt(typeof json?.updatedAt === 'string' ? json.updatedAt : new Date().toISOString());
     } catch (e: any) {
       setError(e?.message || 'Failed to load');
     }
@@ -84,7 +89,7 @@ export default function DashboardClient() {
         <div className="card"><LoadingState /></div>
       )}
       {error && (
-        <div className="card"><ErrorState onRetry={load} /></div>
+        <div className="card"><ErrorState message={error} onRetry={load} /></div>
       )}
       {all && filtered.length === 0 && !error && (
         <div className="card"><EmptyState message="No candidates match your filters." /></div>
