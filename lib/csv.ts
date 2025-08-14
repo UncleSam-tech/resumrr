@@ -15,6 +15,10 @@ export function toCSV(rows: Candidate[]): string {
     'driveUrl',
     'summary',
     'highlights',
+    'skills',
+    'yearsExperience',
+    'credibilityScore',
+    'atsScore',
     'createdAt',
   ];
   const lines = [header.join(',')];
@@ -27,6 +31,10 @@ export function toCSV(rows: Candidate[]): string {
       r.driveUrl,
       r.summary,
       r.highlights.join('; '),
+      (r.skills || []).join('; '),
+      String(r.yearsExperience ?? 0),
+      String(r.credibilityScore ?? 0),
+      String(r.atsScore ?? 0),
       r.createdAt,
     ].map((v) => quote(String(v ?? '')));
     lines.push(values.join(','));

@@ -40,7 +40,14 @@ export default function DashboardClient() {
       const matchesTitle = !title || r.jobTitle.toLowerCase() === title;
       if (!matchesTitle) return false;
       if (!q) return true;
-      const haystacks = [r.name, r.email, r.jobTitle, r.summary, r.highlights.join(' ')].map((s) => s.toLowerCase());
+      const skills = (r.skills && r.skills.length ? r.skills : r.highlights).join(' ');
+      const haystacks = [
+        r.name,
+        r.email,
+        r.jobTitle,
+        r.summary,
+        skills,
+      ].map((s) => s.toLowerCase());
       return haystacks.some((h) => h.includes(q));
     });
   }, [all, filters]);

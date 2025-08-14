@@ -36,6 +36,14 @@ function sameOrigin(req: NextRequest): boolean {
   return (!origin || origin === expected) && (!referer || referer.startsWith(expected));
 }
 
+function toNumber(value: unknown, { min, max }: { min?: number; max?: number } = {}): number {
+  const n = Number(value);
+  if (Number.isNaN(n)) return 0;
+  const lower = typeof min === 'number' ? Math.max(n, min) : n;
+  const clamped = typeof max === 'number' ? Math.min(lower, max) : lower;
+  return clamped;
+}
+
 function normalize(input: any): Candidate[] {
   if (!Array.isArray(input)) return [];
   return input.map((r) => {
@@ -49,6 +57,21 @@ function normalize(input: any): Candidate[] {
         .map((s: string) => s.trim())
         .filter(Boolean);
     }
+
+    const skillsValue = r?.skills ?? highlightsValue;
+    let skills: string[] = [];
+    if (Array.isArray(skillsValue)) {
+      skills = skillsValue.map(String);
+    } else if (typeof skillsValue === 'string') {
+      skills = skillsValue
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter(Boolean);
+    }
+
+    const yearsExperience = toNumber(r?.yearsExperience, { min: 0 });
+    const credibilityScore = toNumber(r?.credibilityScore, { min: 0, max: 100 });
+    const atsScore = toNumber(r?.atsScore, { min: 0, max: 100 });
     const created = r?.createdAt ? String(r.createdAt) : new Date().toISOString();
     return {
       id: String(r?.id ?? ''),
@@ -58,6 +81,10 @@ function normalize(input: any): Candidate[] {
       driveUrl: String(r?.driveUrl ?? ''),
       summary: String(r?.summary ?? ''),
       highlights,
+      skills,
+      yearsExperience,
+      credibilityScore,
+      atsScore,
       createdAt: created,
     } satisfies Candidate;
   });

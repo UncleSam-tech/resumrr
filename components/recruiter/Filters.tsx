@@ -53,7 +53,7 @@ export function Filters(props: {
           <input
             id="q"
             className="input"
-            placeholder="Search name, email, title, summary, highlights"
+            placeholder="Search name, email, title, summary, skills"
             value={value.q}
             onChange={(e) => onChange({ ...value, q: e.target.value })}
           />

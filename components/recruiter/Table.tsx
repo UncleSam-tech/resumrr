@@ -14,6 +14,21 @@ export function Table(props: {
   const sorted = useMemo(() => {
     const arr = [...rows];
     arr.sort((a, b) => {
+      if (sort.key === 'yearsExperience') {
+        const va = a.yearsExperience ?? 0;
+        const vb = b.yearsExperience ?? 0;
+        return sort.dir === 'asc' ? va - vb : vb - va;
+      }
+      if (sort.key === 'credibilityScore') {
+        const va = a.credibilityScore ?? 0;
+        const vb = b.credibilityScore ?? 0;
+        return sort.dir === 'asc' ? va - vb : vb - va;
+      }
+      if (sort.key === 'atsScore') {
+        const va = a.atsScore ?? 0;
+        const vb = b.atsScore ?? 0;
+        return sort.dir === 'asc' ? va - vb : vb - va;
+      }
       let va: string = '';
       let vb: string = '';
       if (sort.key === 'createdAt') {
@@ -57,50 +72,31 @@ export function Table(props: {
         <thead className="bg-gray-50">
           <tr>
             <Th label="Name" active={sort.key === 'name'} dir={sort.dir} onClick={() => toggleSort('name')} />
-            <Th label="Email" />
-            <Th label="Job Title" active={sort.key === 'jobTitle'} dir={sort.dir} onClick={() => toggleSort('jobTitle')} />
-            <Th label="Summary" />
-            <Th label="Highlights" />
-            <Th label="Resume" />
-            <Th label="Created" active={sort.key === 'createdAt'} dir={sort.dir} onClick={() => toggleSort('createdAt')} />
+            <Th label="CV" />
+            <Th label="Years" active={sort.key === 'yearsExperience'} dir={sort.dir} onClick={() => toggleSort('yearsExperience')} />
+            <Th label="Credibility" active={sort.key === 'credibilityScore'} dir={sort.dir} onClick={() => toggleSort('credibilityScore')} />
+            <Th label="ATS" active={sort.key === 'atsScore'} dir={sort.dir} onClick={() => toggleSort('atsScore')} />
+            <Th label="Skills" />
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 bg-white">
           {sorted.map((r) => (
             <tr key={r.id} className="hover:bg-gray-50">
               <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-900">{r.name}</td>
-              <td className="whitespace-nowrap px-3 py-3 text-sm text-blue-700">
-                <button type="button" className="underline" onClick={() => copyEmail(r.email)} title="Copy email">
-                  {r.email}
-                </button>
-                {copied === r.email && (
-                  <span className="ml-2 text-xs text-green-600">Copied</span>
-                )}
-              </td>
-              <td className="whitespace-nowrap px-3 py-3 text-sm">
-                <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-300">
-                  {r.jobTitle}
-                </span>
-              </td>
-              <td className="px-3 py-3 text-sm text-gray-700">
-                <span title={r.summary}>
-                  {r.summary.length > 160 ? r.summary.slice(0, 157) + '…' : r.summary}
-                </span>
-              </td>
-              <td className="px-3 py-3">
-                <div className="flex flex-wrap gap-1">
-                  {r.highlights.map((h, i) => (
-                    <span key={i} className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">
-                      {h}
-                    </span>
-                  ))}
-                </div>
-              </td>
               <td className="whitespace-nowrap px-3 py-3 text-sm">
                 <a href={r.driveUrl} target="_blank" rel="noreferrer" className="text-blue-700 underline">Open</a>
               </td>
-              <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-600">
-                {new Date(r.createdAt).toLocaleString()}
+              <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-900">{r.yearsExperience ?? 0}</td>
+              <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-900">{r.credibilityScore ?? 0}</td>
+              <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-900">{r.atsScore ?? 0}</td>
+              <td className="px-3 py-3">
+                <div className="flex flex-wrap gap-1">
+                  {(r.skills && r.skills.length ? r.skills : r.highlights).map((s, i) => (
+                    <span key={i} className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">
+                      {s}
+                    </span>
+                  ))}
+                </div>
               </td>
             </tr>
           ))}
