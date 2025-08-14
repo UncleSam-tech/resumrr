@@ -121,7 +121,16 @@ export async function GET(req: NextRequest) {
   }
 
   if (!upstream.ok) {
-    return NextResponse.json({ message: 'Upstream returned error' }, { status: 502 });
+    let details = '';
+    try {
+      details = (await upstream.text()).slice(0, 500);
+    } catch {}
+    const status = upstream.status || 502;
+    const statusText = upstream.statusText || '';
+    return NextResponse.json(
+      { message: `Upstream error ${status} ${statusText}`.trim(), details },
+      { status }
+    );
   }
 
   let json: any;
