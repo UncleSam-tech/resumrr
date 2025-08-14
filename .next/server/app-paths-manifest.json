@@ -2,7 +2,7 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/robots.txt/route": "app/robots.txt/route.js",
   "/page": "app/page.js",
+  "/api/submit/route": "app/api/submit/route.js",
   "/api/recruiter/data/route": "app/api/recruiter/data/route.js",
-  "/r/[key]/page": "app/r/[key]/page.js",
-  "/api/submit/route": "app/api/submit/route.js"
+  "/r/[key]/page": "app/r/[key]/page.js"
 }

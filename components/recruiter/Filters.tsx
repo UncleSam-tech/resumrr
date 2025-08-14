@@ -14,7 +14,7 @@ export function Filters(props: {
   jobTitles: string[];
   value: FiltersValue;
   onChange: (next: FiltersValue) => void;
-  onRefresh: () => void;
+  onRefresh: (filters: FiltersValue) => void;
 }) {
   const { all, jobTitles, value, onChange, onRefresh } = props;
 
@@ -33,7 +33,13 @@ export function Filters(props: {
   const titles = useMemo(() => [''].concat(jobTitles), [jobTitles]);
 
   return (
-    <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+    <form
+      className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onRefresh(value);
+      }}
+    >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
         <div>
           <label className="label" htmlFor="title">Job Title</label>
@@ -64,11 +70,11 @@ export function Filters(props: {
         <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-300">
           Showing {count}
         </span>
-        <button type="button" className="button" onClick={onRefresh}>Refresh</button>
+        <button type="submit" className="button">Refresh</button>
         <button type="button" className="button" onClick={onExport}>Export CSV</button>
         <button type="button" className="button" onClick={onReset}>Reset</button>
       </div>
-    </div>
+    </form>
   );
 }
 

@@ -81,7 +81,7 @@ export default function DashboardClient() {
           jobTitles={jobTitles}
           value={filters}
           onChange={setFilters}
-          onRefresh={load}
+          onRefresh={() => load()}
         />
       </div>
 
